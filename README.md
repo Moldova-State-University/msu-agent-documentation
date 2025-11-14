@@ -22,7 +22,7 @@ The project is organized into the following repositories:
 
 - [`msu-agent-documentation`](https://github.com/Moldova-State-University/msu-agent-documentation): Contains all documentation related to the MSU Agent project.
 - [`msu-agent-infrastructure`](https://github.com/Moldova-State-University/msu-agent-infrastructure): Contains infrastructure as code (IaC) scripts and configurations for deploying and managing the MSU Agent services.
-- [`msu-agent--krystallic-version`](https://github.com/Moldova-State-University/msu-agent--krystallic-version): Augmented Reality engine, customized for MSU Agent.
+- [`msu-agent-krystallic-version`](https://github.com/Moldova-State-University/msu-agent-krystallic-version): Augmented Reality engine, customized for MSU Agent.
 - [`msu-agent-knowledge-base`](https://github.com/Moldova-State-University/msu-agent-knowledge-base): Contains the knowledge base and data sources used by the MSU Agent to provide information.
 - [`msu-agent-backend`](https://github.com/Moldova-State-University/msu-agent-backend): Contains the backend services and APIs for the MSU Agent.
 - [`msu-agent-frontend`](https://github.com/Moldova-State-University/msu-agent-frontend): Contains the frontend web application for the MSU Agent.
