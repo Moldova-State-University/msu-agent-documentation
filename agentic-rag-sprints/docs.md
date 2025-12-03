@@ -1,225 +1,213 @@
 # **MSU Agent: Design and Implementation Plan**
-Here’s your full plan translated into English with a technical and professional tone:
 
-**Total Duration:** ~18–20 weeks\
-**Sprints:** 10–11 sprints, each 1–2 weeks
+**Общая длительность:** ~18–20 недель
+**Спринты:** 10–11, каждый 1–2 недели
 
 ---
 
-## **Sprint 0 — Use-Case Research and System Design (2 weeks)**
+## **Спринт 0 — Исследование и проектирование use-case (1 неделя)**
 
-**Goal:** Understand the agent’s objectives and define system requirements.
+**Цель:** Понять задачи агента и определить требования.
 
 **IMPORTANT**\
-[It is recommended to at least review this course to get an overview of what we are building.](https://huggingface.co/learn/agents-course)
+[Рекомендую хотя бы ознакомиться с данным курсом, чтобы получить общее представление о том что мы делаем.](https://huggingface.co/learn/agents-course)
 
-**Tasks:**
+**Задачи:**
 
-1. **Requirements Gathering:**
+1. Сбор требований:
 
-   * Identify required tools (KB, schedule, APIs, utilities)
-   * Define function-calling scenarios: when and which tool should be invoked
-   * Temporary support for a single data language (EN)
+   * Какие тулы нужны (KB, расписание, API и утилиты).
+   * Сценарии function calling: когда и какой тул должен вызываться.
+   * Поддержка одного языка хранения данных (EN) временно.
+2. Анализ LLM:
 
-2. **LLM Analysis:**
+   * Локальные модели и возможности function calling.
+   * Поддержка мультиязычности на уровне LLM.
+3. Архитектура системы:
+4. 
+   * Диаграмма компонентов: user → agent → tool → response.
+   * Определение pipeline RAG: retrieval → LLM → function calling → response.
+4. Подготовка среды:
 
-   * Evaluate local models and their function-calling capabilities
-   * Assess multilingual support at the LLM level
+   * Настройка окружения для локальных LLM, библиотек retrieval, баз данных.
+   * Создание тестового пайплайна.
 
-3. **System Architecture:**
 
-   * Component diagram: user → agent → tool → response
-   * Define the RAG pipeline: retrieval → LLM → function calling → response
+**Тестирование:**
 
-4. **Environment Setup:**
-
-   * Configure local LLMs, retrieval libraries, and databases
-   * Build a minimal test pipeline
-
-**Testing:**
-
-* LLM accessibility checks
-* Minimal function-calling flow with a mock tool
+* Проверка доступности LLM.
+* Минимальный flow function calling с заглушкой тула.
 
 ---
 
-## **Sprint 1 — Knowledge Base Setup (2 weeks)**
+## **Спринт 1 — Организация Knowledge Base (2 недели)**
 
-**Goal:** Build the data storage for RAG and enable basic retrieval functionality.
+**Цель:** Создать хранилище данных для RAG и настроить базовые поисковые возможности.
 
-**Tasks:**
+**Задачи:**
 
-1. **Database Design:**
+1. Проектирование базы данных:
 
-   * Tables: documents, metadata, retrieval indexes
-   * Setup full-text search (FTS)
-   * Configure vector indexes for embeddings
+   * Таблицы: документы, метаданные, индексы для retrieval.
+   * Подготовка FTS (full-text search).
+   * Настройка векторного индекса для embeddings.
+2. Подготовка данных:
 
-2. **Data Preparation:**
+   * Очистка, нормализация текстов.
+   * Индексация векторных embeddings.
+3. Настройка гибридного поиска:
 
-   * Clean and normalize text data
-   * Compute and index embeddings
+   * Проверка FTS.
+   * Проверка векторного поиска.
+   * Объединение результатов (FTS + вектор).
+   * Написание промптов (ВАЖНО!)
+4. Тестирование:
 
-3. **Hybrid Search Setup:**
-
-   * Test FTS
-   * Test vector-based search
-   * Combine results (FTS + vector search)
-   * Write prompts for retrieval (**CRITICAL!**)
-
-4. **Testing:**
-
-   * Keyword-based queries
-   * Embedding-based queries
-   * Hybrid-search edge-case tests
+   * Запросы по ключевым словам.
+   * Поиск по embeddings.
+   * Проверка гибридного поиска на edge-case запросах.
 
 ---
 
-## **Sprint 2 — Tool Development (2 weeks)**
+## **Спринт 2 — Разработка отдельных тулов (2 недели)**
 
-**Goal:** Implement the tools the agent will call via function calling.
+**Цель:** Создать инструменты, которые агент будет вызывать через function calling.
 
-**Tasks:**
+**Задачи:**
 
-1. **Define Function Interfaces:**
+1. Определение интерфейсов функций:
 
    * KB: `search_documents(query, top_k=5)`
-   * Schedule: `get_schedule(user_id, date)`
-   * Additional APIs/utilities as needed
+   * Расписание: `get_schedule(user_id, date)`
+   * Дополнительные API/утилиты.
+2. Реализация функций:
 
-2. **Implement Functions:**
+   * CRUD операции для KB.
+   * Логика фильтрации и форматирования расписания.
+   * Прокси для внешних API.
+3. Тестирование каждого тула:
 
-   * CRUD operations for KB
-   * Logic for schedule filtering and formatting
-   * Proxies for external APIs
-
-3. **Tool Testing:**
-
-   * Unit tests for each function
-   * Tests with English text
-   * Error handling and empty-query scenarios
+   * Юнит-тесты функций.
+   * Проверка на EN текстах.
+   * Проверка обработки ошибок и пустых запросов.
 
 ---
 
-## **Sprint 3 — Integrate Function Calling with LLM (2 weeks)**
+## **Спринт 3 — Подключение function calling к LLM (2 недели)**
 
-**Goal:** Enable the agent to automatically call tools via function calling.
+**Цель:** Агент должен вызывать тулы автоматически через function calling.
 
-**Tasks:**
+**Задачи:**
 
-1. Connect tools to the LLM through function calling
-2. Define function schemas: arguments, return values, error handling
-3. Test scenarios:
+1. Подключение тулов к LLM через function calling.
+2. Настройка схемы вызова функций: аргументы, возвращаемые значения, ошибки.
+3. Тестовые сценарии:
 
-   * Call each tool individually
-   * Error handling verification
-   * Fallback logic checks
-
----
-
-## **Sprint 4 — Initial Multilingual Support (1–2 weeks)**
-
-**Goal:** Enable the agent to understand and respond in RU/RO, even if the data is still in EN.
-
-**Tasks:**
-
-1. Test local LLMs on RU/RO inputs
-2. Configure tokenization and normalization pipelines for multiple languages
-3. Test function calling with multilingual queries
-4. Evaluate edge-case scenarios in different languages
+   * Вызов каждого тула отдельно.
+   * Проверка обработки ошибок.
+   * Проверка fallback логики.
 
 ---
 
-## **Sprint 5 — RAG Pipeline Integration (2–3 weeks)**
+## **Спринт 4 — Первичная мультиязычность на уровне LLM (1–2 недели)**
 
-**Goal:** Fully integrate retrieval + LLM + function calling.
+**Цель:** Агент понимает и отвечает на RU/RO, даже если данные пока EN.
 
-**Tasks:**
+**Задачи:**
 
-1. Integrate KB, retrieval, and LLM:
-
-   * Retrieve relevant documents
-   * Generate responses considering retrieved content
-
-2. Configure hybrid search (FTS + vector search)
-
-3. Handle function calling in RAG context:
-
-   * Agent selects the appropriate tool based on the query
-
-4. Testing:
-
-   * Retrieval and generation correctness
-   * Edge-case queries
-   * Stability under high query load
+1. Тестирование локальных LLM на RU/RO.
+2. Настройка пайплайнов токенизации и нормализации для нескольких языков.
+3. Проверка function calling с мультиязычными запросами.
+4. Тестирование edge-case запросов на разных языках.
 
 ---
 
-## **Sprint 6 — End-to-End System Testing (2 weeks)**
+## **Спринт 5 — Интеграция RAG-пайплайна (2–3 недели)**
 
-**Goal:** Verify that the agent works as a complete system.
+**Цель:** Полностью интегрировать retrieval + LLM + function calling.
 
-**Tasks:**
+**Задачи:**
 
-1. End-to-end scenario testing:
+1. Интеграция KB, retrieval и LLM:
 
-   * Function calling for all tools
-   * Multilingual queries
-   * Invalid data and empty queries
+   * Получение релевантных документов.
+   * Генерация ответа с учетом retrieved контента.
+2. Настройка гибридного поиска (FTS + вектор).
+3. Обработка function calling в контексте RAG:
 
-2. Performance testing:
+   * Агент выбирает тул в зависимости от запроса.
+4. Тестирование:
 
-   * Local LLMs
-   * Retrieval pipeline (FTS + vector)
-
-3. Debugging and logic optimization
-
----
-
-## **Sprint 7 — Function Calling and Tool Logic Optimization (1–2 weeks)**
-
-**Goal:** Improve the agent’s intelligence in selecting tools.
-
-**Tasks:**
-
-1. Implement tool selection logic based on intent detection
-2. Prioritize tool calls when multiple options are available
-3. Test complex query scenarios
+   * correctness retrieval + генерации.
+   * Edge-case запросы.
+   * Проверка стабильности при большом количестве запросов.
 
 ---
 
-## **Sprint 8 — Full Multilingual and RAG Testing (1–2 weeks)**
+## **Спринт 6 — Тестирование всех компонентов (2 недели)**
 
-**Goal:** Validate multilingual scenarios across the entire pipeline.
+**Цель:** Проверить, что агент работает как единая система.
 
-**Tasks:**
+**Задачи:**
 
-1. Test all query types: KB, schedule, combined
-2. Edge-case queries: empty, incorrect, or long queries
-3. Hybrid search testing (FTS + vector)
-4. Evaluate local models on different languages
+1. Сквозное тестирование сценариев:
 
----
+   * Function calling для всех тулов.
+   * Мультиязычные запросы.
+   * Некорректные данные, пустые запросы.
+2. Производительность:
 
-## **Sprint 9 — Documentation and Deployment (1 week)**
-
-**Goal:** Prepare the system for production use.
-
-**Tasks:**
-
-1. Documentation: architecture, function calling, usage examples
-2. Deployment: local or server-based
-3. Final testing
+   * Локальные модели.
+   * Retrieval pipeline (FTS + вектор).
+3. Отладка багов и оптимизация логики.
 
 ---
 
-## **Sprint 10 — Post-Implementation Testing and Improvements (1–2 weeks)**
+## **Спринт 7 — Оптимизация function calling и логики вызова тулов (1–2 недели)**
 
-**Goal:** Ensure stability, optimize performance, and prepare for future expansion.
+**Цель:** Сделать агента «умнее» в выборе инструментов.
 
-**Tasks:**
+**Задачи:**
 
-1. Regression testing for all scenarios
-2. Optimize LLM + retrieval latency
-3. Prepare recommendations for additional languages and new tools
+1. Логика выбора тулов по intent detection.
+2. Приоритет вызова тулов при нескольких возможных вариантах.
+3. Тестирование сценариев с комплексными запросами.
+
+---
+
+## **Спринт 8 — Сквозное тестирование мультиязычности и RAG (1–2 недели)**
+
+**Цель:** Проверить мультиязычные сценарии в полном pipeline.
+
+**Задачи:**
+
+1. Проверка всех типов запросов: KB, расписание, комбинированные.
+2. Edge-case запросы: пустые, некорректные, длинные.
+3. Тестирование hybrid search (FTS + вектор).
+4. Проверка локальных моделей на разных языках.
+
+---
+
+## **Спринт 9 — Документация и развертывание (1 неделя)**
+
+**Цель:** Подготовить систему к использованию.
+
+**Задачи:**
+
+1. Документация: архитектура, function calling, примеры использования.
+2. Развёртывание: локально или на сервере.
+3. Финальное тестирование.
+
+---
+
+## **Спринт 10 — Пост-реализационное тестирование и улучшения (1–2 недели)**
+
+**Цель:** Закрепить стабильность, оптимизировать производительность и подготовить расширение.
+
+**Задачи:**
+
+1. Регрессионное тестирование всех сценариев.
+2. Оптимизация latency LLM + retrieval.
+3. Подготовка рекомендаций для расширения на другие языки и новые тулы.
+
 
